@@ -1,0 +1,6 @@
+{
+  "name": "Rika Firenet Card",
+  "render_readme": true,
+  "filename": "rika-firenet-card.js",
+  "homeassistant": "2023.4.0"
+}

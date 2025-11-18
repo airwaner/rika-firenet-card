@@ -1,0 +1,171 @@
+# ============================================================================
+# RIKA FIRENET CARD - EXEMPLES DE CONFIGURATION
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# CONFIGURATION MINIMALE
+# ----------------------------------------------------------------------------
+# La carte fonctionne avec seulement l'entité climate principale.
+# Elle utilisera des noms d'entités par défaut basés sur "salon_"
+
+type: custom:rika-firenet-card
+entity: climate.salon_2
+
+# ----------------------------------------------------------------------------
+# CONFIGURATION COMPLÈTE RECOMMANDÉE
+# ----------------------------------------------------------------------------
+# Spécifiez toutes vos entités pour un contrôle optimal
+
+type: custom:rika-firenet-card
+entity: climate.salon_2
+model: "DOMO MultiAir"  # Optionnel - Nom du modèle affiché en haut à droite
+entities:
+  # États principaux (REQUIS pour les SVG dynamiques)
+  main_state: sensor.salon_main_state
+  sub_state: sensor.salon_sub_state
+  
+  # Températures (REQUIS pour l'affichage)
+  room_temperature: sensor.salon_room_temperature
+  stove_temperature: sensor.salon_stove_temperature
+  
+  # Contrôles (REQUIS pour l'interaction)
+  heating_power: number.salon_heating_power
+  on_off: switch.salon_on_off
+  
+  # Informations supplémentaires (OPTIONNEL)
+  stove_consumption: sensor.salon_stove_consumption
+  stove_runtime: sensor.salon_stove_runtime
+  pellets_before_service: sensor.salon_pellets_before_service
+  stove_burning: sensor.salon_stove_burning
+  
+  # Diagnostics (OPTIONNEL)
+  diag_motor: sensor.salon_diag_motor
+  fan_velocity: sensor.salon_fan_velocity
+  
+  # Autres contrôles (OPTIONNEL)
+  heating_times: switch.salon_heating_times
+
+# ----------------------------------------------------------------------------
+# CONFIGURATION AVEC NOMS PERSONNALISÉS
+# ----------------------------------------------------------------------------
+# Si vos entités ont des noms différents, adaptez la configuration
+
+type: custom:rika-firenet-card
+entity: climate.mon_poele_rika
+entities:
+  main_state: sensor.mon_poele_main_state
+  sub_state: sensor.mon_poele_sub_state
+  room_temperature: sensor.mon_poele_room_temperature
+  stove_temperature: sensor.mon_poele_stove_temperature
+  heating_power: number.mon_poele_heating_power
+  stove_consumption: sensor.mon_poele_stove_consumption
+  stove_runtime: sensor.mon_poele_stove_runtime
+  pellets_before_service: sensor.mon_poele_pellets_before_service
+  stove_burning: sensor.mon_poele_stove_burning
+  diag_motor: sensor.mon_poele_diag_motor
+  fan_velocity: sensor.mon_poele_fan_velocity
+  heating_times: switch.mon_poele_heating_times
+  on_off: switch.mon_poele_on_off
+
+# ----------------------------------------------------------------------------
+# INTÉGRATION DANS UN DASHBOARD
+# ----------------------------------------------------------------------------
+# Exemple d'intégration dans une vue de tableau de bord
+
+views:
+  - title: Chauffage
+    path: chauffage
+    cards:
+      # Carte Rika en pleine largeur
+      - type: custom:rika-firenet-card
+        entity: climate.salon_2
+        
+      # Ou dans une grille
+      - type: grid
+        columns: 2
+        cards:
+          - type: custom:rika-firenet-card
+            entity: climate.salon_2
+          
+          - type: vertical-stack
+            cards:
+              - type: entities
+                title: Granulés
+                entities:
+                  - sensor.granules_daily
+                  - sensor.granules_monthly
+              
+              - type: history-graph
+                entities:
+                  - sensor.salon_room_temperature
+
+# ----------------------------------------------------------------------------
+# CONFIGURATION AVEC CONDITIONAL CARD
+# ----------------------------------------------------------------------------
+# Afficher la carte seulement si le poêle est disponible
+
+type: conditional
+conditions:
+  - entity: climate.salon_2
+    state_not: unavailable
+card:
+  type: custom:rika-firenet-card
+  entity: climate.salon_2
+
+# ----------------------------------------------------------------------------
+# NOTES IMPORTANTES
+# ----------------------------------------------------------------------------
+
+# 1. NOMS D'ENTITÉS PAR DÉFAUT
+# Si vous ne spécifiez pas les entités, la carte utilisera ces noms par défaut :
+# - sensor.salon_main_state
+# - sensor.salon_sub_state
+# - sensor.salon_room_temperature
+# - sensor.salon_stove_temperature
+# - number.salon_heating_power
+# - switch.salon_on_off
+# - etc.
+
+# 2. ENTITÉS REQUISES MINIMALES
+# Pour que la carte fonctionne correctement, vous devez avoir AU MINIMUM :
+# - climate.XXXX (votre entité principale)
+# - sensor.XXXX_main_state
+# - sensor.XXXX_sub_state
+# - sensor.XXXX_room_temperature
+
+# 3. SVG DYNAMIQUES
+# Les images SVG changent automatiquement selon :
+# - mainState (1-6) : État principal du poêle
+# - subState (0-4) : Sous-état
+# Les SVG proviennent directement de Rika Firenet :
+# https://www.rika-firenet.com/images/status/Visu_XXXX.svg
+
+# 4. CONTRÔLES INTERACTIFS
+# - Température : Clic sur l'icône thermomètre (droite)
+# - Puissance : Slider ajustable de 30% à 100% par pas de 5%
+# - Mode : Clic sur le texte du mode
+# - Power : Bouton central rond
+
+# 5. ONGLETS DISPONIBLES
+# - Accueil : Vue principale avec tous les contrôles
+# - Flamme : Températures et entrées
+# - Réglages : Diagnostics et sorties
+# - Infos : Statistiques et paramètres
+
+# 6. SECTIONS DÉPLIABLES
+# Les sections "Entrées", "Sorties" et "Paramètres" sont dépliables
+# Le + devient − quand la section est ouverte
+
+# 7. RESPONSIVE
+# La carte s'adapte automatiquement à la largeur disponible
+# Fonctionne sur desktop, tablette et mobile
+
+# 8. COMPATIBILITÉ
+# - Home Assistant 2023.4+
+# - Navigateurs modernes (Chrome, Firefox, Safari, Edge)
+# - Application mobile Home Assistant
+
+# 9. PERFORMANCE
+# - Les SVG sont chargés depuis le CDN Rika (connexion internet requise)
+# - Mise à jour automatique des valeurs sans rechargement
+# - Pas de polling excessif (utilise les mises à jour HA natives)
