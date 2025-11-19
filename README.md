@@ -7,9 +7,8 @@
 
 Custom card for Home Assistant that replicates the official Rika Firenet interface.
 
-Perfect integration for your Rika pellet stove with the [Rika Firenet integration by Antibill51](https://github.com/antibill51/rika-firenet-custom-component).
+Visual integration for your Rika pellet stove with the [Rika Firenet integration by Antibill51](https://github.com/antibill51/rika-firenet-custom-component).
 
-![Rika Firenet Card](images/exemple.png)
 
 ---
 
@@ -44,8 +43,9 @@ Main interface with controls and real-time stove status.
 ### 🎮 Interactive Controls
 - 🌡️ **Temperature control**: Click the thermometer icon to adjust target temperature
 - 💪 **Power adjustment**: Slider from 30% to 100% (5% steps)
-- 🔄 **Mode selection**: Cycle through Manual/Auto/Comfort modes
+- 🔄 **Mode selection**: Dropdown menu to select operating mode (Manual/Auto/Off)
 - ⚡ **Power button**: Central on/off control
+- 🔒 **Read-only mode**: Option to display mode without allowing changes
 
 ### 📊 Complete Information Display
 - Current and target temperature
@@ -60,6 +60,7 @@ Main interface with controls and real-time stove status.
 - Complete configuration with all entities
 - Smart default entity names
 - Optional model parameter
+- Optional mode_editable parameter
 
 ## 📋 Prerequisites
 
@@ -106,6 +107,7 @@ entity: climate.salon_2
 type: custom:rika-firenet-card
 entity: climate.salon_2
 model: "DOMO MultiAir"  # Optional - Model name displayed at top right
+mode_editable: true  # Optional - Allow mode selection (true by default)
 entities:
   main_state: sensor.salon_main_state
   sub_state: sensor.salon_sub_state
@@ -120,6 +122,19 @@ entities:
   fan_velocity: sensor.salon_fan_velocity
   heating_times: switch.salon_heating_times
   on_off: switch.salon_on_off
+```
+
+### Read-Only Mode Configuration
+
+If you want to display the mode without allowing changes:
+
+```yaml
+type: custom:rika-firenet-card
+entity: climate.salon_2
+mode_editable: false  # Mode is displayed but not editable
+entities:
+  main_state: sensor.salon_main_state
+  # ... your other entities
 ```
 
 ### Custom Entity Names
@@ -144,7 +159,7 @@ Click on the 4 icons at the bottom of the card to switch between tabs.
 ### Controls
 - **Temperature**: Click the thermometer icon (2nd icon on the right)
 - **Power**: Move the red slider or click on the numeric value
-- **Mode**: Click on the mode text to cycle through modes
+- **Mode**: Use the dropdown menu to select the desired mode (Manual/Auto/Off)
 - **On/Off**: Click the central power button
 
 ### Expandable Sections
