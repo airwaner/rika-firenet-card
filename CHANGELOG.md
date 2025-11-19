@@ -1,5 +1,44 @@
 # 📋 CHANGELOG - Rika Firenet Card
 
+## Version 1.1.0 (2024-11-19)
+
+### 🎯 Amélioration du contrôle de mode
+
+**Changement majeur** : Remplacement du cycle de mode par un menu déroulant
+
+#### ✨ Nouvelles fonctionnalités
+
+- ✅ **Menu déroulant pour les modes** :
+  - Sélection directe du mode (Manuel / Automatique / Arrêt)
+  - Plus intuitive que le cycle automatique
+  - Affiche tous les modes disponibles
+  - Stylisation cohérente avec l'interface Rika
+
+- ✅ **Paramètre `mode_editable`** :
+  - `true` (défaut) : Affiche un select permettant de changer le mode
+  - `false` : Affiche le mode en lecture seule
+  - Permet de désactiver le contrôle si souhaité
+
+#### 🔧 Améliorations techniques
+
+- Suppression de la méthode `handleModeClick()` (obsolète)
+- Ajout de la méthode `handleModeChange()` pour gérer le select
+- Ajout de la méthode `getModeLabel()` pour traduire les modes
+- Nouveaux styles CSS pour le select et le mode read-only
+- Gestion intelligente des modes disponibles (récupérés depuis l'entité climate)
+
+#### 📝 Documentation
+
+- Mise à jour du README.md avec la nouvelle fonctionnalité
+- Ajout d'exemples de configuration avec `mode_editable`
+- Mise à jour des notes techniques dans configuration-examples.yaml
+
+#### ⚠️ Breaking Changes
+
+**Aucun** - La carte est rétrocompatible. Le paramètre `mode_editable` est optionnel et vaut `true` par défaut, donc le comportement par défaut est d'avoir le select éditable.
+
+---
+
 ## Version 1.0.0 (2024-11-18)
 
 ### 🎉 Version initiale
@@ -50,8 +89,9 @@ Première version publique de la carte personnalisée Rika Firenet pour Home Ass
   - Affichage de la valeur en temps réel
   - Appel au service `number.set_value`
 - ✅ **Mode de fonctionnement** :
-  - Clic sur le texte du mode
-  - Cycle automatique entre les modes disponibles
+  - ~~Clic sur le texte du mode~~ (v1.0.0)
+  - ~~Cycle automatique entre les modes disponibles~~ (v1.0.0)
+  - Menu déroulant pour sélection directe (v1.1.0)
   - Appel au service `climate.set_hvac_mode`
 - ✅ **Marche/Arrêt** :
   - Bouton central rond
@@ -205,28 +245,11 @@ Aucun bug connu à ce jour.
 
 ## 🚀 Améliorations futures possibles
 
-### Version 1.1 (à venir)
-- [ ] Éditeur visuel dans l'interface HA
-- [ ] Support des traductions (i18n)
-- [ ] Thèmes personnalisables (couleurs)
 - [ ] Option pour héberger les SVG localement
 - [ ] Animation de transition entre onglets
 - [ ] Graphiques de consommation intégrés
-
-### Version 1.2 (futur)
-- [ ] Historique des températures
 - [ ] Alertes visuelles (entretien, erreurs)
-- [ ] Mode compact (carte réduite)
-- [ ] Widget pour companion app
-- [ ] Export des données
-
-### Version 2.0 (long terme)
-- [ ] Support multi-poêles
 - [ ] Programmation horaire intégrée
-- [ ] Contrôle avancé des courbes de chauffe
-- [ ] Intégration météo
-- [ ] Mode eco/confort automatique
-
 ---
 
 ## 🤝 Contributions
@@ -262,7 +285,7 @@ Les SVG et logos Rika sont la propriété de Rika GmbH.
 
 - **Lignes de code** : ~800
 - **Taille du fichier** : ~50 KB
-- **Temps de développement** : 1 session
+- **Temps de développement** : 2 sessions
 - **Navigateurs testés** : Chrome, Firefox, Safari, Edge
 - **Appareils testés** : Desktop, tablette, mobile
 
@@ -270,6 +293,6 @@ Les SVG et logos Rika sont la propriété de Rika GmbH.
 
 **Développé avec ❤️ pour la communauté Home Assistant**
 
-**Version actuelle : 1.0.0**  
-**Date de sortie : 18 novembre 2024**  
+**Version actuelle : 1.1.0**  
+**Date de sortie : 19 novembre 2024**  
 **Status : Stable**
