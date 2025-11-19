@@ -19,6 +19,7 @@ entity: climate.salon_2
 type: custom:rika-firenet-card
 entity: climate.salon_2
 model: "DOMO MultiAir"  # Optionnel - Nom du modèle affiché en haut à droite
+mode_editable: true  # Optionnel - Permet la sélection du mode (true par défaut)
 entities:
   # États principaux (REQUIS pour les SVG dynamiques)
   main_state: sensor.salon_main_state
@@ -46,12 +47,31 @@ entities:
   heating_times: switch.salon_heating_times
 
 # ----------------------------------------------------------------------------
+# CONFIGURATION MODE LECTURE SEULE
+# ----------------------------------------------------------------------------
+# Si vous souhaitez afficher le mode sans permettre de le modifier
+
+type: custom:rika-firenet-card
+entity: climate.salon_2
+model: "DOMO MultiAir"
+mode_editable: false  # Le mode s'affiche mais n'est pas modifiable
+entities:
+  main_state: sensor.salon_main_state
+  sub_state: sensor.salon_sub_state
+  room_temperature: sensor.salon_room_temperature
+  stove_temperature: sensor.salon_stove_temperature
+  heating_power: number.salon_heating_power
+  on_off: switch.salon_on_off
+
+# ----------------------------------------------------------------------------
 # CONFIGURATION AVEC NOMS PERSONNALISÉS
 # ----------------------------------------------------------------------------
 # Si vos entités ont des noms différents, adaptez la configuration
 
 type: custom:rika-firenet-card
 entity: climate.mon_poele_rika
+model: "DOMO MultiAir"
+mode_editable: true
 entities:
   main_state: sensor.mon_poele_main_state
   sub_state: sensor.mon_poele_sub_state
@@ -111,6 +131,7 @@ conditions:
 card:
   type: custom:rika-firenet-card
   entity: climate.salon_2
+  mode_editable: true
 
 # ----------------------------------------------------------------------------
 # NOTES IMPORTANTES
@@ -133,39 +154,44 @@ card:
 # - sensor.XXXX_sub_state
 # - sensor.XXXX_room_temperature
 
-# 3. SVG DYNAMIQUES
+# 3. PARAMÈTRE mode_editable
+# - true (défaut) : Affiche un menu déroulant pour changer le mode
+# - false : Affiche le mode en lecture seule (pas de modification possible)
+# Utile si vous voulez juste voir le mode actuel sans risquer de le changer
+
+# 4. SVG DYNAMIQUES
 # Les images SVG changent automatiquement selon :
 # - mainState (1-6) : État principal du poêle
 # - subState (0-4) : Sous-état
 # Les SVG proviennent directement de Rika Firenet :
 # https://www.rika-firenet.com/images/status/Visu_XXXX.svg
 
-# 4. CONTRÔLES INTERACTIFS
+# 5. CONTRÔLES INTERACTIFS
 # - Température : Clic sur l'icône thermomètre (droite)
 # - Puissance : Slider ajustable de 30% à 100% par pas de 5%
-# - Mode : Clic sur le texte du mode
+# - Mode : Menu déroulant (si mode_editable: true)
 # - Power : Bouton central rond
 
-# 5. ONGLETS DISPONIBLES
+# 6. ONGLETS DISPONIBLES
 # - Accueil : Vue principale avec tous les contrôles
 # - Flamme : Températures et entrées
 # - Réglages : Diagnostics et sorties
 # - Infos : Statistiques et paramètres
 
-# 6. SECTIONS DÉPLIABLES
+# 7. SECTIONS DÉPLIABLES
 # Les sections "Entrées", "Sorties" et "Paramètres" sont dépliables
 # Le + devient − quand la section est ouverte
 
-# 7. RESPONSIVE
+# 8. RESPONSIVE
 # La carte s'adapte automatiquement à la largeur disponible
 # Fonctionne sur desktop, tablette et mobile
 
-# 8. COMPATIBILITÉ
+# 9. COMPATIBILITÉ
 # - Home Assistant 2023.4+
 # - Navigateurs modernes (Chrome, Firefox, Safari, Edge)
 # - Application mobile Home Assistant
 
-# 9. PERFORMANCE
+# 10. PERFORMANCE
 # - Les SVG sont chargés depuis le CDN Rika (connexion internet requise)
 # - Mise à jour automatique des valeurs sans rechargement
 # - Pas de polling excessif (utilise les mises à jour HA natives)

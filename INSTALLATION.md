@@ -66,6 +66,7 @@ Si tout fonctionne, vous devriez voir :
 - ✅ L'interface Rika avec le SVG de votre poêle
 - ✅ La température ambiante à gauche
 - ✅ Le slider de puissance
+- ✅ Le menu déroulant pour choisir le mode
 - ✅ Les 4 onglets en bas (Accueil / Flamme / Réglages / Infos)
 - ✅ Le bouton power central
 
@@ -81,6 +82,17 @@ entities:
   main_state: sensor.MON_POELE_main_state  # ← Et ici
   sub_state: sensor.MON_POELE_sub_state
   # ... etc
+```
+
+### Mode lecture seule
+Si vous voulez afficher le mode sans permettre de le modifier :
+
+```yaml
+type: custom:rika-firenet-card
+entity: climate.salon_2
+mode_editable: false  # ← Ajouter cette ligne
+entities:
+  # ... vos entités
 ```
 
 ### Voir vos entités disponibles
@@ -130,6 +142,7 @@ entities:
 - ✅ SVG dynamique du poêle
 - ✅ Icônes de statut (horloge, thermomètre, confort, WiFi)
 - ✅ Slider de puissance ajustable
+- ✅ Menu déroulant pour sélectionner le mode
 - ✅ Affichage du mode actuel
 - ✅ Bouton marche/arrêt
 
@@ -162,7 +175,7 @@ Cliquez sur l'**icône thermomètre** (2e icône à droite) et entrez la tempér
 Déplacez le **slider rouge** ou cliquez sur la valeur numérique.
 
 ### Changer le mode
-Cliquez sur le **texte du mode** (Mode manuel/auto/confort) pour cycler entre les modes.
+Utilisez le **menu déroulant** pour sélectionner directement le mode souhaité (Manuel / Automatique / Arrêt).
 
 ### Allumer/Éteindre
 Cliquez sur le **bouton power central** (rond avec icône).
