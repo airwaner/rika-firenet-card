@@ -1,7 +1,7 @@
 /**
  * Rika Firenet Custom Card for Home Assistant
  * Reproduit l'interface officielle Rika Firenet
- * Version: 1.0.0
+ * Version: 1.1.0
  */
 
 class RikaFirenetCard extends HTMLElement {
@@ -123,20 +123,23 @@ class RikaFirenetCard extends HTMLElement {
     });
   }
 
-  handleModeClick() {
+  handleModeChange(event) {
     const climateEntity = this._config.entity;
-    const currentMode = this.getStateAttribute(climateEntity, 'hvac_mode', 'heat');
-    const modes = this.getStateAttribute(climateEntity, 'hvac_modes', ['heat', 'auto', 'off']);
-    
-    // Cycle through modes
-    const currentIndex = modes.indexOf(currentMode);
-    const nextIndex = (currentIndex + 1) % modes.length;
-    const nextMode = modes[nextIndex];
+    const newMode = event.target.value;
     
     this.callService('climate', 'set_hvac_mode', {
       entity_id: climateEntity,
-      hvac_mode: nextMode
+      hvac_mode: newMode
     });
+  }
+
+  getModeLabel(mode) {
+    const labels = {
+      'heat': 'Mode manuel',
+      'auto': 'Mode automatique',
+      'off': 'Arrêt'
+    };
+    return labels[mode] || mode;
   }
 
   renderHomeTab() {
@@ -154,21 +157,44 @@ class RikaFirenetCard extends HTMLElement {
     const subState = parseInt(this.getStateValue(subStateEntity, '0'));
     const power = this.getStateValue(powerEntity, '0');
     const hvacMode = this.getStateAttribute(climateEntity, 'hvac_mode', 'heat');
+    const hvacModes = this.getStateAttribute(climateEntity, 'hvac_modes', ['heat', 'auto', 'off']);
     const presetMode = this.getStateAttribute(climateEntity, 'preset_mode', 'none');
     const heatingTimesOn = this.getStateValue(heatingTimesEntity) === 'on';
     const isOn = this.getStateValue(switchEntity) === 'on';
 
     const [statusSvg, statusText] = this.getStatusDetails(mainState, subState, false);
 
-    // Déterminer le mode affiché
-    let modeText = 'Mode manuel';
-    if (hvacMode === 'auto') modeText = 'Mode automatique';
-    if (presetMode === 'comfort') modeText = 'Mode confort';
+    // Déterminer si le mode est éditable
+    const modeEditable = this._config.mode_editable !== false; // true par défaut
 
     // Récupération du modèle : config > friendly_name > défaut
     const model = this._config.model || 
                   this.getStateAttribute(climateEntity, 'friendly_name', null) || 
                   'DOMO MultiAir';
+
+    // Construction du sélecteur de mode ou affichage simple
+    let modeHtml = '';
+    if (modeEditable) {
+      // Mode éditable : select stylisé
+      const modeOptions = hvacModes.map(mode => 
+        `<option value="${mode}" ${mode === hvacMode ? 'selected' : ''}>${this.getModeLabel(mode)}</option>`
+      ).join('');
+      
+      modeHtml = `
+        <div class="mode-section">
+          <select class="mode-select">
+            ${modeOptions}
+          </select>
+        </div>
+      `;
+    } else {
+      // Mode lecture seule : affichage simple
+      modeHtml = `
+        <div class="mode-section">
+          <div class="mode-text-readonly">${this.getModeLabel(hvacMode)}</div>
+        </div>
+      `;
+    }
 
     return `
       <div class="tab-content">
@@ -223,9 +249,7 @@ class RikaFirenetCard extends HTMLElement {
         </div>
 
         <!-- Mode -->
-        <div class="mode-section">
-          <div class="mode-text">${modeText}</div>
-        </div>
+        ${modeHtml}
 
         <!-- Bouton Power -->
         <div class="power-button-container">
@@ -626,17 +650,39 @@ class RikaFirenetCard extends HTMLElement {
           text-align: center;
         }
 
-        .mode-text {
-          color: #333;
+        .mode-select {
+          width: 100%;
+          max-width: 300px;
+          padding: 12px 16px;
           font-size: 16px;
+          color: #333;
+          background: white;
+          border: 2px solid #D94E2A;
+          border-radius: 8px;
           cursor: pointer;
-          padding: 8px;
-          border-radius: 4px;
-          transition: background 0.3s;
+          outline: none;
+          transition: all 0.3s;
+          font-family: inherit;
         }
 
-        .mode-text:hover {
-          background: rgba(0,0,0,0.05);
+        .mode-select:hover {
+          background: #fff5f2;
+          box-shadow: 0 2px 8px rgba(217, 78, 42, 0.2);
+        }
+
+        .mode-select:focus {
+          border-color: #c43d1a;
+          box-shadow: 0 0 0 3px rgba(217, 78, 42, 0.1);
+        }
+
+        .mode-text-readonly {
+          color: #333;
+          font-size: 16px;
+          padding: 12px 16px;
+          background: #f5f5f5;
+          border-radius: 8px;
+          display: inline-block;
+          min-width: 200px;
         }
 
         .power-button-container {
@@ -834,10 +880,10 @@ class RikaFirenetCard extends HTMLElement {
       powerSlider.addEventListener('change', (e) => this.handlePowerSliderChange(e));
     }
 
-    // Mode
-    const modeText = this.shadowRoot.querySelector('.mode-text');
-    if (modeText) {
-      modeText.addEventListener('click', () => this.handleModeClick());
+    // Select de mode
+    const modeSelect = this.shadowRoot.querySelector('.mode-select');
+    if (modeSelect) {
+      modeSelect.addEventListener('change', (e) => this.handleModeChange(e));
     }
 
     // Température (icône thermomètre)
@@ -855,6 +901,7 @@ class RikaFirenetCard extends HTMLElement {
     return {
       entity: "climate.salon_2",
       model: "DOMO MultiAir",
+      mode_editable: true,
       entities: {
         main_state: "sensor.salon_main_state",
         sub_state: "sensor.salon_sub_state",
@@ -885,7 +932,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c RIKA-FIRENET-CARD %c v1.0.0 ',
+  '%c RIKA-FIRENET-CARD %c v1.1.0 ',
   'color: white; background: #D94E2A; font-weight: 700;',
   'color: #D94E2A; background: white; font-weight: 700;'
 );
